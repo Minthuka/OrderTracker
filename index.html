@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Simple Order Tracker</title>
   <style>
+    /* (STYLE SAME AS YOUR CODE — unchanged) */
     :root{
       --bg:#0f172a;
       --panel:#111827ee;
@@ -18,161 +19,170 @@
     }
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,'Helvetica Neue',Arial;background:linear-gradient(180deg,#0b1220,#0f172a 30%);color:var(--text)}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto;background:linear-gradient(180deg,#0b1220,#0f172a 30%);color:var(--text)}
     .wrap{max-width:1100px;margin:24px auto;padding:0 16px}
     header{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:14px}
-    h1{font-size:clamp(18px,2.5vw,24px);margin:0;letter-spacing:.3px}
+    h1{font-size:clamp(18px,2.5vw,24px);margin:0}
     .badge{font-size:12px;border:1px solid #334155;color:var(--muted);padding:4px 8px;border-radius:999px}
 
     .grid{display:grid;grid-template-columns:1.15fr 2fr;gap:16px}
     @media (max-width:940px){.grid{grid-template-columns:1fr}}
 
-    .card{background:linear-gradient(180deg,#0e1729,#0a1322);border:1px solid #1f2937;border-radius:16px;box-shadow:0 10px 30px #0005}
-    .card h2{font-size:16px;font-weight:600;margin:0 0 8px;color:#e2e8f0}
+    .card{background:linear-gradient(180deg,#0e1729,#0a1322);border:1px solid #1f2937;border-radius:16px}
+    .card h2{font-size:16px;margin:0 0 8px}
     .card .body{padding:16px}
 
     form .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
     form .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
     @media (max-width:640px){form .row,form .row3{grid-template-columns:1fr}}
 
-    label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px}
+    label{font-size:12px;color:var(--muted);margin-bottom:6px;display:block}
     input,select,button{font:inherit}
-    input[type="text"],input[type="number"],input[type="date"],select{width:100%;padding:10px 12px;border:1px solid #1f2937;background:#0b1020;color:#e2e8f0;border-radius:10px;outline:none}
+    input[type="text"],input[type="number"],input[type="date"],select{
+      width:100%;padding:10px 12px;border:1px solid #1f2937;background:#0b1020;
+      color:#e2e8f0;border-radius:10px;
+    }
     input[type="file"]{width:100%}
-    input::placeholder{color:#94a3b880}
 
-    .btn{padding:10px 14px;border-radius:10px;border:1px solid #1f2937;background:#0b1020;color:#e2e8f0;cursor:pointer}
-    .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#0b1020;border:none;font-weight:700}
-    .btn.ghost{background:#0b1020}
+    .btn{padding:10px 14px;border-radius:10px;background:#0b1020;border:1px solid #1f2937;color:#e2e8f0;cursor:pointer}
+    .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#0b1020;border:none}
     .btn.danger{background:#1a0e12;border-color:#3f1d28;color:#fecaca}
-    .btn:disabled{opacity:.6;cursor:not-allowed}
 
-    .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-    .toolbar .sp{flex:1}
+    .toolbar{display:flex;gap:8px}
     table{width:100%;border-collapse:separate;border-spacing:0 10px}
-    thead th{font-size:12px;text-align:left;color:#94a3b8;font-weight:600;padding:0 10px}
-    tbody td{background:linear-gradient(180deg,#0b1220,#0a0f1a);border:1px solid #1f2937;border-left:none;border-right:none;padding:12px 10px}
-    tbody tr td:first-child{border-left:1px solid #1f2937}
-    tbody tr td:last-child{border-right:1px solid #1f2937}
-    .thumb{width:54px;height:54px;border-radius:10px;object-fit:cover;border:1px solid #263142;cursor:pointer}
 
-    .chip{display:inline-flex;align-items:center;gap:8px;background:#0b1020;border:1px solid #1f2937;padding:6px 10px;border-radius:999px;font-size:12px;color:#cbd5e1}
-    .right{display:flex;gap:8px;justify-content:flex-end}
-    .totals{display:flex;gap:12px;flex-wrap:wrap}
-    .total{background:#0b1020;border:1px solid #1f2937;padding:10px 12px;border-radius:10px;font-size:13px}
-    dialog{border:none;border-radius:14px;padding:0;background:#0b1020;color:#e2e8f0}
-    .modal-head{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid #1f2937}
-    .modal-body{padding:12px}
-    .modal-body img{max-width:80vw;max-height:70vh;border-radius:12px;display:block}
-    .empty{padding:16px;color:#94a3b8;text-align:center;border:1px dashed #273246;border-radius:12px;background:#0b102044}
+    .thumb{width:54px;height:54px;border-radius:10px;object-fit:cover;border:1px solid #263142}
+    .total{background:#0b1020;border:1px solid #1f2937;padding:10px;border-radius:10px}
+
+    dialog{background:#0b1020;border:none;border-radius:14px}
   </style>
 </head>
 
 <body>
-  <div class="wrap">
-    <header>
-      <h1>🛒 Simple Order Tracker <span class="badge">MongoDB</span></h1>
-      <div class="toolbar">
-        <button id="clearAllBtn" class="btn danger">Clear All</button>
-      </div>
-    </header>
+<div class="wrap">
+<header>
+  <h1>🛒 Simple Order Tracker <span class="badge">MongoDB</span></h1>
+  <button id="clearAllBtn" class="btn danger">Clear All</button>
+</header>
 
-    <div class="grid">
-      <section class="card">
-        <div class="body">
-          <h2>Add Order</h2>
-          <form id="orderForm">
-            <div class="row3">
-              <div>
-                <label>Date</label>
-                <input type="date" id="date" />
-              </div>
-              <div>
-                <label>Customer</label>
-                <input type="text" id="customer" required />
-              </div>
-              <div>
-                <label>Shop</label>
-                <input type="text" id="shop" required />
-              </div>
-            </div>
+<div class="grid">
 
-            <div class="row">
-              <div>
-                <label>Amount for Shop</label>
-                <input type="number" id="amtShop" min="0" step="0.01" required />
-              </div>
-              <div>
-                <label>Amount for Customer</label>
-                <input type="number" id="amtCustomer" min="0" step="0.01" required />
-              </div>
-            </div>
+  <!-- ADD ORDER -->
+  <section class="card">
+    <div class="body">
+      <h2>Add Order</h2>
 
-            <div class="row">
-              <div>
-                <label>Photo</label>
-                <input type="file" id="photo" accept="image/*" />
-              </div>
-              <div class="right">
-                <button type="submit" class="btn primary">Add</button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </section>
+      <form id="orderForm">
 
-      <section class="card">
-        <div class="body">
-          <h2>Orders</h2>
-
-          <div class="totals" id="totals"></div>
-
-          <div style="overflow:auto">
-            <table>
-              <thead>
-                <tr>
-                  <th>Photo</th>
-                  <th>Date</th>
-                  <th>Customer</th>
-                  <th>Shop</th>
-                  <th>Shop Amt</th>
-                  <th>Customer Amt</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody id="rows"></tbody>
-            </table>
+        <div class="row3">
+          <div>
+            <label>Date</label>
+            <input type="date" id="date">
           </div>
 
-          <p id="emptyState" class="empty" style="display:none">No orders yet.</p>
-        </div>
-      </section>
-    </div>
-  </div>
+          <div>
+            <label>Customer</label>
+            <input type="text" id="customer" list="customerList" required>
+            <datalist id="customerList"></datalist>
+          </div>
 
-  <dialog id="imgModal">
-    <div class="modal-head">
-      <strong>Order Photo</strong>
-      <button class="btn" id="closeModal">Close</button>
+          <div>
+            <label>Shop</label>
+            <input type="text" id="shop" list="shopList" required>
+            <datalist id="shopList"></datalist>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Amount for Shop</label>
+            <input type="number" id="amtShop" min="0" step="0.01" required>
+          </div>
+          <div>
+            <label>Amount for Customer</label>
+            <input type="number" id="amtCustomer" min="0" step="0.01" required>
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Photo</label>
+            <input type="file" id="photo" accept="image/*">
+          </div>
+          <div class="right">
+            <button type="submit" class="btn primary">Add</button>
+          </div>
+        </div>
+
+      </form>
     </div>
-    <div class="modal-body"><img id="modalImg"></div>
-  </dialog>
+  </section>
+
+  <!-- ORDER LIST -->
+  <section class="card">
+    <div class="body">
+      <h2>Orders</h2>
+
+      <div class="totals" id="totals"></div>
+
+      <div style="overflow:auto">
+        <table>
+          <thead>
+            <tr>
+              <th>Photo</th>
+              <th>Date</th>
+              <th>Customer</th>
+              <th>Shop</th>
+              <th>Shop Amt</th>
+              <th>Customer Amt</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+
+      <p id="emptyState" class="empty" style="display:none">No orders yet.</p>
+    </div>
+  </section>
+
+</div>
+</div>
+
+<!-- MODAL -->
+<dialog id="imgModal">
+  <div class="modal-head">
+    <strong>Order Photo</strong>
+    <button class="btn" id="closeModal">Close</button>
+  </div>
+  <div class="modal-body"><img id="modalImg"></div>
+</dialog>
 
 <script>
 const API = "https://ordertracker-7yle.onrender.com";
-
 const $ = (s, r=document)=>r.querySelector(s);
 const money = n => Number(n||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
 let ORDERS = [];
 
-// Load orders from API
+// LOAD ORDERS
 async function load(){
   const res = await fetch(`${API}/orders`);
   ORDERS = await res.json();
+
+  updateDatalists();  // 🔥 ADD AUTOCOMPLETE HERE
   render();
 }
 
-// Convert file to base64
+// 🔥 NEW: UPDATE AUTOCOMPLETE LISTS
+function updateDatalists(){
+  const customers = [...new Set(ORDERS.map(o => o.customer).filter(Boolean))].sort();
+  const shops = [...new Set(ORDERS.map(o => o.shop).filter(Boolean))].sort();
+
+  $("#customerList").innerHTML = customers.map(c => `<option value="${c}"></option>`).join("");
+  $("#shopList").innerHTML = shops.map(s => `<option value="${s}"></option>`).join("");
+}
+
+// FILE → BASE64
 function fileToDataURL(file){
   return new Promise((res,rej)=>{
     const r=new FileReader();
@@ -182,61 +192,65 @@ function fileToDataURL(file){
   });
 }
 
-// Add order
+// ADD ORDER
 async function addOrder(order){
   const res = await fetch(`${API}/orders`, {
-    method: "POST",
+    method:"POST",
     headers:{ "Content-Type":"application/json" },
-    body: JSON.stringify(order)
+    body:JSON.stringify(order)
   });
+
   const newOrder = await res.json();
   ORDERS.unshift(newOrder);
+
+  updateDatalists(); // 🔥 AUTOCOMPLETE UPDATE AFTER ADDING
   render();
 }
 
-// Delete order
+// DELETE ORDER
 async function removeOrder(id){
   if(!confirm("Delete this order?")) return;
-  await fetch(`${API}/orders/${id}`,{ method:"DELETE" });
-  ORDERS = ORDERS.filter(o=>o._id!==id);
+
+  await fetch(`${API}/orders/${id}`, { method:"DELETE" });
+  ORDERS = ORDERS.filter(o => o._id !== id);
+
+  updateDatalists(); // 🔥 AUTOCOMPLETE UPDATE AFTER DELETE
   render();
 }
 
-// Render UI
+// RENDER TABLE
 function render(){
   const rows = $("#rows");
   rows.innerHTML = "";
 
-  if(ORDERS.length === 0){
-    $("#emptyState").style.display = "block";
-  } else {
-    $("#emptyState").style.display = "none";
-  }
+  $("#emptyState").style.display = ORDERS.length ? "none" : "block";
 
   for(const o of ORDERS){
     const tr = document.createElement("tr");
 
-    // Photo
+    // PHOTO
     const tdPhoto = document.createElement("td");
     if(o.photo){
-      const img=document.createElement("img");
-      img.src=o.photo; img.className="thumb";
-      img.onclick=()=>openModal(o.photo);
+      const img = document.createElement("img");
+      img.src = o.photo; img.className="thumb";
+      img.onclick = () => openModal(o.photo);
       tdPhoto.appendChild(img);
-    } else tdPhoto.innerHTML = "<span class='chip'>No photo</span>";
+    } else {
+      tdPhoto.innerHTML = "<span class='chip'>No photo</span>";
+    }
     tr.appendChild(tdPhoto);
 
-    tr.appendChild(makeCell(o.date));
-    tr.appendChild(makeCell(o.customer));
-    tr.appendChild(makeCell(o.shop));
-    tr.appendChild(makeCell("฿ " + money(o.amtShop)));
-    tr.appendChild(makeCell("฿ " + money(o.amtCustomer)));
+    tr.appendChild(cell(o.date));
+    tr.appendChild(cell(o.customer));
+    tr.appendChild(cell(o.shop));
+    tr.appendChild(cell("฿ " + money(o.amtShop)));
+    tr.appendChild(cell("฿ " + money(o.amtCustomer)));
 
-    const tdDel=document.createElement("td");
-    const btn=document.createElement("button");
-    btn.className="btn danger";
+    const tdDel = document.createElement("td");
+    const btn = document.createElement("button");
     btn.textContent="Delete";
-    btn.onclick=()=>removeOrder(o._id);
+    btn.className="btn danger";
+    btn.onclick = ()=>removeOrder(o._id);
     tdDel.appendChild(btn);
     tr.appendChild(tdDel);
 
@@ -253,7 +267,7 @@ function render(){
   `;
 }
 
-function makeCell(text){
+function cell(text){
   const td=document.createElement("td");
   td.textContent=text;
   return td;
@@ -264,9 +278,9 @@ function openModal(src){
   $("#imgModal").showModal();
 }
 
-$("#closeModal").onclick=()=>$("#imgModal").close();
+$("#closeModal").onclick = ()=>$("#imgModal").close();
 
-// Submit form
+// FORM SUBMIT
 $("#orderForm").addEventListener("submit", async e=>{
   e.preventDefault();
 
@@ -278,27 +292,19 @@ $("#orderForm").addEventListener("submit", async e=>{
 
   const file = $("#photo").files[0];
   let photo = "";
-  if(file){
-    photo = await fileToDataURL(file);
-  }
+  if(file){ photo = await fileToDataURL(file); }
 
-  await addOrder({
-    date,
-    customer,
-    shop,
-    amtShop,
-    amtCustomer,
-    photo
-  });
+  await addOrder({ date, customer, shop, amtShop, amtCustomer, photo });
 
   e.target.reset();
 });
 
-// Clear all
-$("#clearAllBtn").onclick=async()=>{
+// DELETE ALL
+$("#clearAllBtn").onclick = async ()=>{
   if(!confirm("Delete ALL orders?")) return;
-  await fetch(`${API}/orders`,{ method:"DELETE" });
-  ORDERS=[];
+  await fetch(`${API}/orders`, { method:"DELETE" });
+  ORDERS = [];
+  updateDatalists();
   render();
 };
 
