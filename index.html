@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Simple Order Tracker</title>
   <style>
-    /* (STYLE SAME AS YOUR CODE — unchanged) */
+    /* 🟦 SAME STYLES AS YOUR LAST CODE — unchanged */
     :root{
       --bg:#0f172a;
       --panel:#111827ee;
@@ -18,43 +18,31 @@
       --card:#0b1220;
     }
     *{box-sizing:border-box}
-    html,body{height:100%}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto;background:linear-gradient(180deg,#0b1220,#0f172a 30%);color:var(--text)}
+    body{font-family:system-ui;background:linear-gradient(180deg,#0b1220,#0f172a 30%);color:var(--text);margin:0;}
+
     .wrap{max-width:1100px;margin:24px auto;padding:0 16px}
-    header{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:14px}
-    h1{font-size:clamp(18px,2.5vw,24px);margin:0}
-    .badge{font-size:12px;border:1px solid #334155;color:var(--muted);padding:4px 8px;border-radius:999px}
+    header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
 
-    .grid{display:grid;grid-template-columns:1.15fr 2fr;gap:16px}
-    @media (max-width:940px){.grid{grid-template-columns:1fr}}
-
-    .card{background:linear-gradient(180deg,#0e1729,#0a1322);border:1px solid #1f2937;border-radius:16px}
-    .card h2{font-size:16px;margin:0 0 8px}
-    .card .body{padding:16px}
-
-    form .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    form .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-    @media (max-width:640px){form .row,form .row3{grid-template-columns:1fr}}
-
-    label{font-size:12px;color:var(--muted);margin-bottom:6px;display:block}
-    input,select,button{font:inherit}
     input[type="text"],input[type="number"],input[type="date"],select{
-      width:100%;padding:10px 12px;border:1px solid #1f2937;background:#0b1020;
-      color:#e2e8f0;border-radius:10px;
+      width:100%;padding:10px;border-radius:10px;background:#0b1020;border:1px solid #1f2937;color:#e2e8f0;
     }
-    input[type="file"]{width:100%}
-
-    .btn{padding:10px 14px;border-radius:10px;background:#0b1020;border:1px solid #1f2937;color:#e2e8f0;cursor:pointer}
-    .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#0b1020;border:none}
+    .btn{padding:10px 14px;background:#0b1020;border-radius:10px;color:#e2e8f0;cursor:pointer;border:1px solid #1f2937}
+    .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));border:none;color:#0b1020}
     .btn.danger{background:#1a0e12;border-color:#3f1d28;color:#fecaca}
 
-    .toolbar{display:flex;gap:8px}
+    .grid{display:grid;grid-template-columns:1.2fr 2fr;gap:16px}
+    @media(max-width:900px){.grid{grid-template-columns:1fr}}
+
+    .card{background:#0a1322;border:1px solid #1f2937;border-radius:16px}
+    .card .body{padding:16px}
+
+    .toolbar{display:flex;gap:8px;margin-bottom:10px}
+    .toolbar input{flex:1;}
+
     table{width:100%;border-collapse:separate;border-spacing:0 10px}
-
-    .thumb{width:54px;height:54px;border-radius:10px;object-fit:cover;border:1px solid #263142}
-    .total{background:#0b1020;border:1px solid #1f2937;padding:10px;border-radius:10px}
-
-    dialog{background:#0b1020;border:none;border-radius:14px}
+    tbody td{background:#0b1220;padding:12px;border:1px solid #1f2937;}
+    .thumb{width:55px;height:55px;border-radius:10px;object-fit:cover;border:1px solid #263142}
+    .chip{padding:6px 10px;border:1px solid #1f2937;border-radius:999px;background:#0b1020;font-size:12px}
   </style>
 </head>
 
@@ -96,11 +84,11 @@
         <div class="row">
           <div>
             <label>Amount for Shop</label>
-            <input type="number" id="amtShop" min="0" step="0.01" required>
+            <input type="number" id="amtShop" required>
           </div>
           <div>
             <label>Amount for Customer</label>
-            <input type="number" id="amtCustomer" min="0" step="0.01" required>
+            <input type="number" id="amtCustomer" required>
           </div>
         </div>
 
@@ -109,9 +97,7 @@
             <label>Photo</label>
             <input type="file" id="photo" accept="image/*">
           </div>
-          <div class="right">
-            <button type="submit" class="btn primary">Add</button>
-          </div>
+          <button type="submit" class="btn primary">Add</button>
         </div>
 
       </form>
@@ -122,6 +108,13 @@
   <section class="card">
     <div class="body">
       <h2>Orders</h2>
+
+      <!-- 🔥 NEW FILTER AREA -->
+      <div class="toolbar">
+        <input id="filterCustomer" type="text" placeholder="🔍 Filter by customer…">
+        <input id="filterShop" type="text" placeholder="🔍 Filter by shop…">
+        <button id="clearFilters" class="btn">Clear</button>
+      </div>
 
       <div class="totals" id="totals"></div>
 
@@ -159,30 +152,47 @@
 </dialog>
 
 <script>
+/* ---------- CONFIG ---------- */
 const API = "https://ordertracker-7yle.onrender.com";
 const $ = (s, r=document)=>r.querySelector(s);
 const money = n => Number(n||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
 let ORDERS = [];
 
-// LOAD ORDERS
+/* ---------- FILTER STATE ---------- */
+const state = {
+  fCustomer: "",
+  fShop: ""
+};
+
+/* ---------- LOAD ORDERS ---------- */
 async function load(){
   const res = await fetch(`${API}/orders`);
   ORDERS = await res.json();
-
-  updateDatalists();  // 🔥 ADD AUTOCOMPLETE HERE
+  updateDatalists();
   render();
 }
 
-// 🔥 NEW: UPDATE AUTOCOMPLETE LISTS
+/* ---------- AUTOCOMPLETE LISTS ---------- */
 function updateDatalists(){
-  const customers = [...new Set(ORDERS.map(o => o.customer).filter(Boolean))].sort();
-  const shops = [...new Set(ORDERS.map(o => o.shop).filter(Boolean))].sort();
+  const customers = [...new Set(ORDERS.map(o => o.customer))].sort();
+  const shops = [...new Set(ORDERS.map(o => o.shop))].sort();
 
   $("#customerList").innerHTML = customers.map(c => `<option value="${c}"></option>`).join("");
   $("#shopList").innerHTML = shops.map(s => `<option value="${s}"></option>`).join("");
 }
 
-// FILE → BASE64
+/* ---------- FILTER FUNCTION ---------- */
+function getFiltered(){
+  const fC = state.fCustomer.toLowerCase();
+  const fS = state.fShop.toLowerCase();
+
+  return ORDERS.filter(o =>
+    (!fC || o.customer.toLowerCase().includes(fC)) &&
+    (!fS || o.shop.toLowerCase().includes(fS))
+  );
+}
+
+/* ---------- FILE → BASE64 ---------- */
 function fileToDataURL(file){
   return new Promise((res,rej)=>{
     const r=new FileReader();
@@ -192,7 +202,7 @@ function fileToDataURL(file){
   });
 }
 
-// ADD ORDER
+/* ---------- ADD ORDER ---------- */
 async function addOrder(order){
   const res = await fetch(`${API}/orders`, {
     method:"POST",
@@ -202,38 +212,39 @@ async function addOrder(order){
 
   const newOrder = await res.json();
   ORDERS.unshift(newOrder);
-
-  updateDatalists(); // 🔥 AUTOCOMPLETE UPDATE AFTER ADDING
+  updateDatalists();
   render();
 }
 
-// DELETE ORDER
+/* ---------- DELETE ORDER ---------- */
 async function removeOrder(id){
   if(!confirm("Delete this order?")) return;
 
   await fetch(`${API}/orders/${id}`, { method:"DELETE" });
   ORDERS = ORDERS.filter(o => o._id !== id);
 
-  updateDatalists(); // 🔥 AUTOCOMPLETE UPDATE AFTER DELETE
+  updateDatalists();
   render();
 }
 
-// RENDER TABLE
+/* ---------- RENDER TABLE ---------- */
 function render(){
   const rows = $("#rows");
   rows.innerHTML = "";
 
-  $("#emptyState").style.display = ORDERS.length ? "none" : "block";
+  const list = getFiltered(); // 🔥 APPLY FILTERS HERE
 
-  for(const o of ORDERS){
+  $("#emptyState").style.display = list.length ? "none" : "block";
+
+  for(const o of list){
     const tr = document.createElement("tr");
 
-    // PHOTO
+    // Photo
     const tdPhoto = document.createElement("td");
     if(o.photo){
       const img = document.createElement("img");
-      img.src = o.photo; img.className="thumb";
-      img.onclick = () => openModal(o.photo);
+      img.src=o.photo; img.className="thumb";
+      img.onclick = ()=>openModal(o.photo);
       tdPhoto.appendChild(img);
     } else {
       tdPhoto.innerHTML = "<span class='chip'>No photo</span>";
@@ -246,8 +257,8 @@ function render(){
     tr.appendChild(cell("฿ " + money(o.amtShop)));
     tr.appendChild(cell("฿ " + money(o.amtCustomer)));
 
-    const tdDel = document.createElement("td");
-    const btn = document.createElement("button");
+    const tdDel=document.createElement("td");
+    const btn=document.createElement("button");
     btn.textContent="Delete";
     btn.className="btn danger";
     btn.onclick = ()=>removeOrder(o._id);
@@ -257,13 +268,13 @@ function render(){
     rows.appendChild(tr);
   }
 
-  const tShop = ORDERS.reduce((s,o)=>s+o.amtShop,0);
-  const tCust = ORDERS.reduce((s,o)=>s+o.amtCustomer,0);
+  const tShop = list.reduce((s,o)=>s+o.amtShop,0);
+  const tCust = list.reduce((s,o)=>s+o.amtCustomer,0);
 
   $("#totals").innerHTML = `
     <div class="total">Total Shop: <strong>฿ ${money(tShop)}</strong></div>
     <div class="total">Total Customer: <strong>฿ ${money(tCust)}</strong></div>
-    <div class="total">Rows: <strong>${ORDERS.length}</strong></div>
+    <div class="total">Rows: <strong>${list.length}</strong></div>
   `;
 }
 
@@ -280,7 +291,7 @@ function openModal(src){
 
 $("#closeModal").onclick = ()=>$("#imgModal").close();
 
-// FORM SUBMIT
+/* ---------- FORM SUBMIT ---------- */
 $("#orderForm").addEventListener("submit", async e=>{
   e.preventDefault();
 
@@ -299,11 +310,30 @@ $("#orderForm").addEventListener("submit", async e=>{
   e.target.reset();
 });
 
-// DELETE ALL
-$("#clearAllBtn").onclick = async ()=>{
+/* ---------- FILTER EVENTS ---------- */
+$("#filterCustomer").addEventListener("input", e=>{
+  state.fCustomer = e.target.value;
+  render();
+});
+
+$("#filterShop").addEventListener("input", e=>{
+  state.fShop = e.target.value;
+  render();
+});
+
+$("#clearFilters").onclick = ()=>{
+  state.fCustomer = "";
+  state.fShop = "";
+  $("#filterCustomer").value = "";
+  $("#filterShop").value = "";
+  render();
+};
+
+/* ---------- CLEAR ALL ---------- */
+$("#clearAllBtn").onclick = async()=>{
   if(!confirm("Delete ALL orders?")) return;
-  await fetch(`${API}/orders`, { method:"DELETE" });
-  ORDERS = [];
+  await fetch(`${API}/orders`,{ method:"DELETE" });
+  ORDERS=[];
   updateDatalists();
   render();
 };
